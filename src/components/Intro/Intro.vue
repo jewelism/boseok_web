@@ -136,15 +136,16 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding-left: 20px;
   margin-bottom: -10px;
 }
 
 .skillName {
-  width: 100px;
+  width: 30%;
 }
 
 .skillBar {
-  width: 35vw;
+  width: 70%;
 }
 
 @media (max-width: 400px) {
