@@ -34,6 +34,7 @@ export default {
         return true
       } else {
         this.increaseScore()
+        clearTimeout(this.timer)
         return false
       }
     }

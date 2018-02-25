@@ -48,7 +48,8 @@ export default {
       skills: [
         { name: 'HTML', per: 75 },
         { name: 'CSS', per: 60 },
-        { name: 'Spring', per: 80 },
+        { name: 'Java', per: 85 },
+        { name: 'Spring', per: 75 },
         { name: 'node.js', per: 75 },
         { name: 'ES6', per: 90 },
         { name: 'react.js', per: 90 },
@@ -126,7 +127,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 400px;
+  width: 500px;
   margin-top: 30px;
 }
 
@@ -136,7 +137,7 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding-left: 20px;
+  // padding-left: 10px;
   margin-bottom: -10px;
 }
 
@@ -165,7 +166,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 400px;
+    width: 350px;
     margin-top: 15px;
   }
 
