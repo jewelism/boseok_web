@@ -19,7 +19,7 @@ export default {
       menuItems: [
         { id: 'Intro', display: '개발자소개' },
         { id: 'Portfolio', display: '포트폴리오', url: 'portfolio.html' },
-        // { id: 'Game', display: '게임' },
+        { id: 'Game', display: '게임' },
       ]
     }
   },

@@ -1,16 +1,17 @@
 <template>
   <div :style="{
     display: 'flex',
+    width: '100%',
+    'overflow-x': 'hidden',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '10vh',
   }">
     <Intro v-if="currentPage === 'Intro'"/>
-    <Portfolio v-if="currentPage === 'Portfolio'"/>
     <Game v-if="currentPage === 'Game'"/>
     <div :style="{
-      width: '100%',
+      width: '98%',
       position: 'fixed',
       bottom: 0,
       paddingBottom: '4vh',
@@ -24,8 +25,7 @@
 
 <script>
 import Intro from './components/Intro/Intro'
-import Game from './components/Game'
-import Portfolio from './components/Portfolio/Portfolio'
+import Game from './components/Game/Game'
 import FooterMenu from './components/FooterMenu'
 
 export default {
@@ -47,8 +47,14 @@ export default {
   components: {
     Intro,
     Game,
-    Portfolio,
     FooterMenu
   }
 }
 </script>
+
+<style scoped>
+.container {
+  
+}
+
+</style>
