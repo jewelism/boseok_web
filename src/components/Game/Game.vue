@@ -13,12 +13,23 @@
         </div>
       </div>
     </div>
-    <div v-if="status===true">
-      <Enemy :increaseScore="increaseScore" :decreaseLife="decreaseLife"/>
+    <div v-if="status===true" v-once>
+      <Enemy
+        v-for="(e, index) in totalEnemy"
+        :key="index"
+        :increaseScore="increaseScore"
+        :decreaseLife="decreaseLife"
+        :style="{
+          position: 'absolute',
+          top: `${getRandomInt(15, 75)}vh`,
+          left: `${getRandomInt(20, 80)}vw`,
+        }"
+      />
+      
     </div>
     <div v-if="!isAlive" class="gameover">
       <div class="gameoverTxt">Game Over</div>
-      <button @click="restart" class="restartBtn">Restart</button>
+      <button @click="start" class="restartBtn">Restart</button>
     </div>
   </div>
 </template>
@@ -33,18 +44,21 @@ export default {
       backgroundFlash: 'black',
       lifes: 3,
       score: 0,
-      enemy: 30,
+      totalEnemy: null,
       timer: null,
       flashTimer: null,
       status: null,
     }
   },
   methods: {
+    getRandomInt: function(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    },
     increaseScore: function(){
-      this.score ++
+      this.score += 1
     },
     decreaseLife: function(){
-      this.lifes --
+      this.lifes -= 1
       this.backgroundFlash = 'red'
       this.flashTimer = setTimeout(()=>{
         this.backgroundFlash = 'black'
@@ -54,21 +68,20 @@ export default {
       this.status = true
       this.lifes = 3
       this.score = 0
-      this.enemy = 30
+      this.totalEnemy = 30
     },
-    restart: function(){
-      this.start()
-    }
   },
   computed: {
     isAlive: function (){
-      return this.lifes > 0
+      if(!(this.lifes > 0))
+        this.status = false
+      return this.lifes > 0 && this.status
     },
   },
   mounted(){
     this.start()
   },
-  destroyed(){
+  beforeDestroy (){
     clearTimeout(this.timer)
   },
   components: {

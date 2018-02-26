@@ -1,5 +1,5 @@
 <template>
-  <div v-if="status" class="enemy">
+  <div v-if="isAlive" class="enemy" v-once>
     <div @click="onClickHead" class="enemy_head">
     </div>
     <div @click="onClickBody" class="enemy_body">
@@ -17,7 +17,7 @@ export default {
   data(){
     return {
       life: 3,
-      timer: null,
+      isAlive: true,
     }
   },
   methods: {
@@ -25,48 +25,42 @@ export default {
       this.life = 0
     },
     onClickBody: function () {
-      this.life--
+      this.life -= 1
     },
   },
-  computed: {
-    status: function(){
-      if(this.life > 0){
-        return true
-      } else {
+  watch: {
+    life: function(newVal){
+      if(newVal <= 0){
         this.increaseScore()
-        clearTimeout(this.timer)
-        return false
+        this.isAlive = false
       }
     }
   },
   mounted () {
-    this.timer = setTimeout(()=>{
+    this.enemy_timer = setTimeout(()=>{
       this.decreaseLife()
-    }, 3000)
+      this.isAlive = false
+    }, 20000)
   },
-  destroyed (){
-    clearTimeout(this.timer)
+  beforeDestroy (){
+    clearTimeout(this.enemy_timer)
   }
 }
 </script>
 
 <style scoped>
 .enemy {
-  position: absolute;
-  left: 50%;
-  right: 50%;
   width: 10px;
   height: 17px;
   background-color: red;
   z-index: 1;
 
   animation: ani 1000s;
-  // animation: ani 200s 1 forwards;
 }
 
 @keyframes ani { 
   from { }
-  to { width: 1000%; height: 1700% }
+  to { width: 10000px; height: 17000px }
 }
 
 .enemy_head {
