@@ -8,8 +8,13 @@
             <img src="../../assets/heart.png" v-for="life in lifes" class="life"/>
           </span>
         </div>
-        <div class="score">
-          Score : {{score}}
+        <div>
+          <div class="score">
+            High Score : {{highScore}}
+          </div>
+          <div>
+            Score : {{score}}
+          </div>
         </div>
       </div>
     </div>
@@ -17,6 +22,8 @@
       <Enemy
         v-for="(e, index) in totalEnemy"
         :key="index"
+        :index="index"
+        :randomInt="getRandomInt(7000, 50000)"
         :increaseScore="increaseScore"
         :decreaseLife="decreaseLife"
         :style="{
@@ -44,6 +51,7 @@ export default {
       backgroundFlash: 'black',
       lifes: 3,
       score: 0,
+      highScore: 0,
       totalEnemy: null,
       timer: null,
       flashTimer: null,
@@ -66,19 +74,25 @@ export default {
     },
     start: function(){
       this.status = true
-      this.lifes = 3
+      this.lifes = this.getRandomInt(2, 5)
       this.score = 0
-      this.totalEnemy = 30
+      this.totalEnemy = this.getRandomInt(15, 30)
     },
   },
   computed: {
     isAlive: function (){
-      if(!(this.lifes > 0))
+      if(!(this.lifes > 0)){
         this.status = false
+        let storageScore = localStorage.getItem('highScore') || 0
+        let highScore = Math.max(this.score, this.highScore, storageScore)
+        this.highScore = highScore
+        localStorage.setItem('highScore', highScore)
+      }
       return this.lifes > 0 && this.status
     },
   },
   mounted(){
+    this.highScore = localStorage.getItem('highScore') || 0
     this.start()
   },
   beforeDestroy (){
@@ -112,7 +126,7 @@ export default {
 
 .statusBarWrapper {
   position: fixed;
-  top: 50px;
+  top: 40px;
   width: 70vw;
   text-align: center;
 }
@@ -122,6 +136,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 20px;
 }
 

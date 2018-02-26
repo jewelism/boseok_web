@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlive" class="enemy" v-once>
+  <div v-if="isAlive" :class="['enemy_' + index]" v-once>
     <div @click="onClickHead" class="enemy_head">
     </div>
     <div @click="onClickBody" class="enemy_body">
@@ -11,8 +11,10 @@
 export default {
   name: 'Enemy',
   props: {
+    index: Number,
     increaseScore: Function,
     decreaseLife: Function,
+    randomInt: Number,
   },
   data(){
     return {
@@ -37,32 +39,39 @@ export default {
     }
   },
   mounted () {
+    // console.log(this.randomInt)
+    const createdStyleTag = document.createElement("style");
+    const index = this.index;
+    const animationName = `enemy_ani${index}`;
+    createdStyleTag.textContent = `
+      .enemy_${index} {
+        width: 10px;
+        height: 17px;
+        background-color: red;
+        z-index: ${50000-this.randomInt};
+
+        animation: ${animationName} ${this.randomInt/20}s;
+      }
+
+      @keyframes ${animationName} { 
+        from { }
+        to { width: 10000px; height: 17000px }
+      }
+    `
+    document.body.appendChild(createdStyleTag)
+
     this.enemy_timer = setTimeout(()=>{
       this.decreaseLife()
       this.isAlive = false
-    }, 20000)
+    }, this.randomInt)
   },
   beforeDestroy (){
     clearTimeout(this.enemy_timer)
-  }
+  },
 }
 </script>
 
 <style scoped>
-.enemy {
-  width: 10px;
-  height: 17px;
-  background-color: red;
-  z-index: 1;
-
-  animation: ani 1000s;
-}
-
-@keyframes ani { 
-  from { }
-  to { width: 10000px; height: 17000px }
-}
-
 .enemy_head {
   width: 100%;
   height: 35%;
