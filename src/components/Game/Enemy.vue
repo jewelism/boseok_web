@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlive" :class="['enemy_' + index]" v-once>
+  <div v-if="isAlive" :class="['enemy_' + index]">
     <div @click="onClickHead" class="enemy_head">
     </div>
     <div @click="onClickBody" class="enemy_body">
@@ -14,7 +14,8 @@ export default {
     index: Number,
     increaseScore: Function,
     decreaseLife: Function,
-    randomInt: Number,
+    decreaseEnemy: Function,
+    random: Function,
   },
   data(){
     return {
@@ -35,38 +36,48 @@ export default {
       if(newVal <= 0){
         this.increaseScore()
         this.isAlive = false
+        this.decreaseEnemy()
       }
     }
   },
   mounted () {
-    // console.log(this.randomInt)
     const createdStyleTag = document.createElement("style");
     const index = this.index;
     const animationName = `enemy_ani${index}`;
+    const randomMs = this.random(7000, 50000)
+    
     createdStyleTag.textContent = `
       .enemy_${index} {
-        width: 10px;
-        height: 17px;
-        background-color: red;
-        z-index: ${50000-this.randomInt};
+        position: absolute;
+        top: ${this.random(13, 73)}vh;
+        left: ${this.random(11, 85)}vw;
 
-        animation: ${animationName} ${this.randomInt/20}s;
+        width: 20px;
+        height: 20px;
+        background-image: url(http://1.bp.blogspot.com/-EuESyz_GuoE/T09_BIntRaI/AAAAAAAACIg/teIvU4p_6JQ/s1600/Zombie.gif);
+        background-size: cover;
+        
+        z-index: ${50000-randomMs};
+        animation: ${animationName} ${randomMs/20}s;
       }
 
       @keyframes ${animationName} { 
         from { }
-        to { width: 10000px; height: 17000px }
+        to { width: 20000px; height: 20000px }
       }
     `
     document.body.appendChild(createdStyleTag)
 
-    this.enemy_timer = setTimeout(()=>{
-      this.decreaseLife()
-      this.isAlive = false
-    }, this.randomInt)
+    this[`enemy_timer_${index}`] = setTimeout(()=>{
+      if(this.isAlive){
+        this.decreaseLife()
+        this.isAlive = false
+        this.decreaseEnemy()
+      }
+    }, randomMs)
   },
   beforeDestroy (){
-    clearTimeout(this.enemy_timer)
+    clearTimeout(this[`enemy_timer_${this.index}`])
   },
 }
 </script>
@@ -74,13 +85,13 @@ export default {
 <style scoped>
 .enemy_head {
   width: 100%;
-  height: 35%;
-  background-color: blue;
+  height: 40%;
+  // background-color: blue;
 }
 
 .enemy_body {
   width: 100%;
-  height: 65%;
-  background-color: gray;
+  height: 60%;
+  // background-color: gray;
 }
 </style>

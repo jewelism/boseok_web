@@ -18,24 +18,24 @@
         </div>
       </div>
     </div>
-    <div v-if="status===true" v-once>
+    <div v-if="status===true">
       <Enemy
         v-for="(e, index) in totalEnemy"
         :key="index"
         :index="index"
-        :randomInt="getRandomInt(7000, 50000)"
+        :random="getRandomInt"
         :increaseScore="increaseScore"
         :decreaseLife="decreaseLife"
-        :style="{
-          position: 'absolute',
-          top: `${getRandomInt(15, 75)}vh`,
-          left: `${getRandomInt(20, 80)}vw`,
-        }"
+        :decreaseEnemy="decreaseEnemy"
       />
       
     </div>
     <div v-if="!isAlive" class="gameover">
       <div class="gameoverTxt">Game Over</div>
+      <button @click="start" class="restartBtn">Restart</button>
+    </div>
+    <div v-if="status==='win'" class="gameover">
+      <div class="gameoverTxt">You win!</div>
       <button @click="start" class="restartBtn">Restart</button>
     </div>
   </div>
@@ -49,10 +49,11 @@ export default {
   data(){
     return {
       backgroundFlash: 'black',
-      lifes: 3,
+      lifes: null,
       score: 0,
       highScore: 0,
       totalEnemy: null,
+      currentEnemy: null,
       timer: null,
       flashTimer: null,
       status: null,
@@ -72,23 +73,38 @@ export default {
         this.backgroundFlash = 'black'
       }, 250)
     },
+    decreaseEnemy: function(){
+      this.currentEnemy -= 1
+    },
     start: function(){
       this.status = true
       this.lifes = this.getRandomInt(2, 5)
       this.score = 0
       this.totalEnemy = this.getRandomInt(15, 30)
+      this.currentEnemy = this.totalEnemy
+    },
+    setHighScore: function(){
+      let storageScore = localStorage.getItem('highScore') || 0
+      let highScore = Math.max(this.score, this.highScore, storageScore)
+      this.highScore = highScore
+      localStorage.setItem('highScore', highScore)
     },
   },
   computed: {
     isAlive: function (){
       if(!(this.lifes > 0)){
         this.status = false
-        let storageScore = localStorage.getItem('highScore') || 0
-        let highScore = Math.max(this.score, this.highScore, storageScore)
-        this.highScore = highScore
-        localStorage.setItem('highScore', highScore)
+        this.setHighScore()
       }
       return this.lifes > 0 && this.status
+    },
+  },
+  watch: {
+    currentEnemy: function(newVal){
+      if(newVal<=0){
+        this.status = 'win'
+        this.setHighScore()
+      }
     },
   },
   mounted(){
